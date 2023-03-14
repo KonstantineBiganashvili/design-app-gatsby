@@ -1,14 +1,48 @@
 import React from 'react'
 import { graphql } from 'gatsby'
-import Layout from '../components/Layout'
-import Hero from '../components/Hero'
+import { Layout, Hero, About, Projects } from '../components'
 
-const HomePage = () => {
+const HomePage = ({ data }) => {
+  const {
+    allAirtable: { nodes: projects },
+  } = data
+
   return (
     <Layout>
       <Hero />
+      <About />
+      <Projects projects={projects} title="latest projects" />
     </Layout>
   )
 }
+
+export const query = graphql`
+  {
+    allAirtable(
+      filter: { table: { eq: "projects" } }
+      limit: 3
+      sort: { fields: data___date, order: DESC }
+    ) {
+      nodes {
+        id
+        data {
+          date
+          name
+          type
+          image {
+            localFiles {
+              childImageSharp {
+                gatsbyImageData(
+                  layout: CONSTRAINED
+                  placeholder: DOMINANT_COLOR
+                )
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+`
 
 export default HomePage

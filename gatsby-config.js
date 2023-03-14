@@ -25,5 +25,21 @@ module.exports = {
         path: `${__dirname}/src/images`,
       },
     },
+    {
+      resolve: 'gatsby-source-airtable',
+      options: {
+        apiKey: process.env.GATSBY_AIRTABLE_API,
+        concurrency: 5,
+        tables: [
+          {
+            baseId: process.env.GATSBY_AIRTABLE_BASE_ID,
+            tableName: `projects`,
+            mapping: {
+              image: `fileNode`,
+            },
+          },
+        ],
+      },
+    },
   ],
 }
