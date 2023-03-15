@@ -1,10 +1,11 @@
 import React from 'react'
 import { graphql } from 'gatsby'
-import { Layout, Hero, About, Projects } from '../components'
+import { Layout, Hero, About, Projects, Slider, Survey } from '../components'
 
 const HomePage = ({ data }) => {
   const {
-    allAirtable: { nodes: projects },
+    projects: { nodes: projects },
+    customers: { nodes: customers },
   } = data
 
   return (
@@ -12,13 +13,15 @@ const HomePage = ({ data }) => {
       <Hero />
       <About />
       <Projects projects={projects} title="latest projects" />
+      <Survey />
+      <Slider customers={customers} />
     </Layout>
   )
 }
 
 export const query = graphql`
   {
-    allAirtable(
+    projects: allAirtable(
       filter: { table: { eq: "projects" } }
       limit: 3
       sort: { fields: data___date, order: DESC }
@@ -39,6 +42,28 @@ export const query = graphql`
               }
             }
           }
+        }
+      }
+    }
+    customers: allAirtable(filter: { table: { eq: "customers" } }) {
+      nodes {
+        id
+        data {
+          name
+          image {
+            localFiles {
+              childImageSharp {
+                gatsbyImageData(
+                  layout: CONSTRAINED
+                  placeholder: DOMINANT_COLOR
+                  width: 150
+                  height: 150
+                )
+              }
+            }
+          }
+          quote
+          title
         }
       }
     }
